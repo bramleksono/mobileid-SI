@@ -1,0 +1,28 @@
+{
+  "META": {
+    "DeviceID": "APA91bGG1zYbmWCl7kuFFwlcjmaIj0L-74IAXS5s-gYyOfAp5YNuTCyvbYsyf6hJJcodTkugM_uJwaLU0ibBgyCsDDPBDmH8z5oF3L4HOoujgf4x3RLdu9kE3oyPQEGfocUGIr0JiRSzOMNd5nfSONETRk38rQwnBg",
+    "signature": "d964600df5329e00cdb28c92323c10e3c880f89472dda10364d48bb8dddc4c70"
+  },
+  "KTP": {
+    "NIK ": "3271231008950005",
+    "Nama ": "NAMA USER3",
+    "TempatTglLahir": {
+      "TempatLahir": "JAKARTA",
+      "TanggalLahir": "10/08/1995"
+    },
+    "JenisKelamin": "PEREMPUAN",
+    "GolDarah": "O",
+    "Alamat": {
+      "Jalan": "JL GANESHA 12",
+      "RT": "005",
+      "RW": "003",
+      "KelDesa": "DAGO",
+      "Kecamatan": "CIBEUNYING"
+    },
+    "Agama": "ISLAM",
+    "StatusPerkawinan": "BELUM KAWIN",
+    "Pekerjaan": "PELAJAR/MAHASISWA",
+    "Kewarganegaraan": "WNI",
+    "BerlakuHingga": "10/08/2018"
+  }
+}
