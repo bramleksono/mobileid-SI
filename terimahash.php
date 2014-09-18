@@ -1,21 +1,8 @@
 <?php
-require_once('filemanipulation.php');
 
-function hitunghashktp($ktp,$otp) {
-    $algo = "sha256";
-    $data = caridataktp($ktp);
-    $data2 = explode(':>',$data);
-    //nomor ktp ada di array 0
-    $pathfoto = './data/foto/'.$data2[3];
+require_once('./lib/crypt.php');
 
-    $hashfoto = hash_hmac_file($algo, $pathfoto, $otp);
-    $dataktp = $hashfoto . ':>' . $data;
-    $hashktp = hash_hmac($algo, $dataktp, $otp);
-    echo $hashktp;
-    return $hashktp;
-}
-
-function hash_compare($a, $b) { 
+function hash_compare($a, $b) {
     if (!is_string($a) || !is_string($b)) { 
         return false; 
     } 
@@ -28,42 +15,24 @@ function hash_compare($a, $b) {
         $status |= ord($a[$i]) ^ ord($b[$i]); 
     } 
     return $status === 0; 
-} 
-
-function caridataktp($ktp) {
-    $linektp = findline($ktp,'./data/ktp.txt');
-    if ($linektp >= 0) {
-        $ktp = getline($linektp,'./data/ktp.txt');
-        return $ktp;
-    }
 }
 
-function caridevice($deviceid) {
-    return findline($deviceid,'./data/device.txt');
-}
+function proseshash($data,$postedhash) {
+    $signature =  $data["META"]["signature"];
+    $OTP =  $data["META"]["OTP"];
+    //hitung hmac dengan OTP sebagai key
+    $hmacresult = hitunghmacdata($signature,$OTP);
 
-function proseshash($linepid,$hash) {
-    $process = getline($linepid,'./data/pid.txt');
-    $process1 = explode(':>',$process);
-        
-    $ktp = $process1[1];
-    $otp = $process1[4];
-    $hashsi = hitunghashktp($ktp,$otp);
-    if (hash_compare($hashsi, $hash)) { 
+    echo "sig=".$signature." OTP=".$OTP." hmac=".$hmacresult.PHP_EOL;
+    if (hash_compare($hmacresult, $postedhash)) { 
         return 1; 
     }
     return 0;
 }
 
-function caripid($pid) {
-    return findline($pid,'./data/pid.txt'); 
-}
-
-function kirimcallback($linepid) {
-    $process = getline($linepid,'./data/pid.txt');
-    $process1 = explode(':>',$process);
-    $url=$process1[5];
-    $data=array('request' => 'ok');
+function kirimcallback($url,$message) {
+    $url="http://postcatcher.in/catchers/5417ac22dc35d6020000077f";
+    $data=array('From' => 'Signing Interface', 'Request' => 'ok', 'Message' => $message);
     sendpost($url,$data);
 }
 
@@ -79,7 +48,7 @@ function sendpost($url,$data) {
     $context  = stream_context_create($options);
     $result = file_get_contents($url, false, $context);
 
-    var_dump($result);
+    //var_dump($result);
 }
 
 //reveice post message
@@ -87,31 +56,25 @@ function sendpost($url,$data) {
 //$pid=$_POST['pid'];
 //$hash=$_POST['hash'];
 
-$device='1234678882';
-$noktp='012312343';
-$pid='1562095054';
-$otp='9739';
-$hash='ac6f527dbb02ef672b85b7f4cf9224611be88ab113a2105b32cc8b6298725fa5';
+$postdata = json_decode(file_get_contents('php://input'), true);
+$AppID =  $postdata["META"]["AppID"];
+$PID =  $postdata["META"]["PID"];
+$posthash =  $postdata["MESSAGE"]["hash"];
 
-//process message
-if (caridevice($device) >= 0) {
-    $linepid = caripid($pid);
-    if ($linepid >= 0) {
-        if (proseshash($linepid,$hash)) {
-            echo "hash benar!";
-            kirimcallback($linepid);
-        }
-        else {
-            echo "hash salah";
-        }
+$filename = $AppID.".".$PID;
+if (!file_exists("./data/pid/".$filename) == 0) {
+    $data = json_decode(file_get_contents("./data/pid/".$filename), true);
+    if (proseshash($data,$posthash) == 1) {
+        echo "Hash benar !";
+        //kirim callback
+        $callback = $data["META"]["CallbackURL"];
+        $message = $data["META"]["Message"];
+        kirimcallback($callback,$message);
+        //jika callback berhasil, hapus file pid
+        unlink("./data/pid/".$filename);
     }
-    else {
-        echo "PID tidak ditemukan";
-    }
+    else echo "Hash salah";
 }
-else {
-    echo "Device ID tidak terdaftar";
-}
-
+else echo "PID tidak ditemukan";
 
 ?>

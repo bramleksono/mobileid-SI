@@ -1,4 +1,4 @@
-//kirim sebagai json ke main.php
+//kirim sebagai json ke daftarlogin.php
 
 {  "META": {
     "AppID": "123123123asfgfjhhtweasdvbgjtyrewras",

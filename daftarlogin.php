@@ -1,6 +1,5 @@
 <?php
 //hello world
-
 require_once('./lib/filemanipulation.php');
 require_once('./lib/crypt.php');
 require_once('./lib/GCMPushMessage.php');
@@ -17,7 +16,7 @@ function daftarpid($appid,$data) {
         $pid=rand();
         $OTP=rand(0,9999);
         $filename = $appid.".".$pid;
-        if (file_exists($filename) == 0) {
+        if (file_exists("./data/pid/".$filename) == 0) {
             echo "Catat sebagai proses baru. PID = $pid".PHP_EOL;
             //catat OTP
             $data["META"]["OTP"] = $OTP;
@@ -63,7 +62,7 @@ $AppID =  $data["META"]["AppID"];
 //process message
 if (cariapp($AppID) >= 0) {
     $encode = json_encode($data['KTP']);
-    $data["META"]["signature"] = hitunghashktp($encode);
+    $data["META"]["signature"] = hitunghashdata($encode);
     if (daftarpid($AppID,$data) == 1) {
         //mengirim pesan ke device
         //kirimGCM($json_data);
