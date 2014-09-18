@@ -18,13 +18,12 @@ function daftarpid($appid,$data) {
         $OTP=rand(0,9999);
         $filename = $appid.".".$pid;
         if (file_exists($filename) == 0) {
-            echo "catat sebagai proses baru".PHP_EOL;
+            echo "Catat sebagai proses baru. PID = $pid".PHP_EOL;
             //catat OTP
-            $decode = json_decode($data, true);
-            $decode["META"]["OTP"] = $OTP;
-            $data = json_encode($decode);
+            $data["META"]["OTP"] = $OTP;
+            $encode = json_encode($data);
             //tulis ke file
-            if (!file_put_contents("./data/pid/".$filename, $data)) {
+            if (!file_put_contents("./data/pid/".$filename, $encode)) {
                 echo "kesalahan menyimpan process id";
             }
             $i++;
@@ -65,8 +64,7 @@ $AppID =  $data["META"]["AppID"];
 if (cariapp($AppID) >= 0) {
     $encode = json_encode($data['KTP']);
     $data["META"]["signature"] = hitunghashktp($encode);
-    $json_data = json_encode($data);
-    if (daftarpid($AppID,$json_data) == 1) {
+    if (daftarpid($AppID,$data) == 1) {
         //mengirim pesan ke device
         //kirimGCM($json_data);
         echo "Permintaan berhasil";
