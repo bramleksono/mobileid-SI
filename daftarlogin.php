@@ -38,18 +38,13 @@ function daftarpid($appid,$data) {
 }
 
 function kirimGCM ($data) {
-    //parse json
-    $decode = json_decode($data, true);
+    $devices = $data["META"]["DeviceID"];
+    $message = $data["META"]["Message"];
     
-    $apiKey = "AIzaSyDnkJE8ZKNfwbqGHDlg5k1PVh1hOMv8Ru0";
-    $devices = $decode["META"]["DeviceID"];
-    $message = $decode["META"]["Message"];
+    $gcpm = new GCMPushMessage($message,$devices);
+    $response = $gcpm->sendGoogleCloudMessage();
     
-    $gcpm = new GCMPushMessage($apiKey);
-    $gcpm->setDevices($devices);
-    $response = $gcpm->send($message, array('title' => 'test title', 'message' => $message));
-    
-    //return value?
+    echo "Response:".$response."\n";
 }
 
 //reveice post message
@@ -65,8 +60,8 @@ if (cariapp($AppID) >= 0) {
     $data["META"]["signature"] = hitunghashdata($encode);
     if (daftarpid($AppID,$data) == 1) {
         //mengirim pesan ke device
-        //kirimGCM($json_data);
-        echo "Permintaan berhasil";
+        kirimGCM($data);
+        echo "\r\nPermintaan berhasil";
     }
 }
 else {
