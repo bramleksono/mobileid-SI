@@ -111,7 +111,7 @@ class GCMPushMessage {
 
 		// $data = array('title' => 'test title', 'message' => $message);
 		// $ids = array($id);
-		print "device id:".$ids[0]."\r\n";
+		//print "device id:".$ids[0]."\r\n";
 
 		//------------------------------
 		// Replace with real GCM API 

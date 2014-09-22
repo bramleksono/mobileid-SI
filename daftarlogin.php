@@ -44,7 +44,7 @@ function kirimGCM ($data) {
     $gcpm = new GCMPushMessage($message,$devices);
     $response = $gcpm->sendGoogleCloudMessage();
     
-    echo "Response:".$response."\n";
+    //echo "Response:".$response."\n";
 }
 
 function response($IDNumber,$pid) {
