@@ -17,7 +17,7 @@ function daftarpid($appid,$data) {
         $OTP=rand(0,9999);
         $filename = $appid.".".$pid;
         if (file_exists("./data/pid/".$filename) == 0) {
-            echo "Catat sebagai proses baru. PID = $pid".PHP_EOL;
+            //echo "Catat sebagai proses baru. PID = $pid".PHP_EOL;
             //catat OTP
             $data["META"]["OTP"] = $OTP;
             $encode = json_encode($data);
@@ -34,7 +34,7 @@ function daftarpid($appid,$data) {
         }
         $j++;
     }
-    return $result;
+    return array ($result,$pid);
 }
 
 function kirimGCM ($data) {
@@ -47,21 +47,34 @@ function kirimGCM ($data) {
     echo "Response:".$response."\n";
 }
 
+function response($IDNumber,$pid) {
+    $response['STATUS'] = array(
+      'Success' => TRUE, 
+      'NIK' => $IDNumber,
+      'PID' => $pid,
+    );
+    return json_encode($response);
+}
+
 //reveice post message
 //var_dump($_POST);
 $data = json_decode(file_get_contents('php://input'), true);
 
 $AppID =  $data["META"]["AppID"];
+$IDNumber = $data["KTP"]["NIK"];
 //cek META field, apakah data lengkap
 
 //process message
 if (cariapp($AppID) >= 0) {
     $encode = json_encode($data['KTP']);
     $data["META"]["signature"] = hitunghashdata($encode);
-    if (daftarpid($AppID,$data) == 1) {
+    $daftar = daftarpid($AppID,$data);
+    if ($daftar[0] == 1) {
         //mengirim pesan ke device
         kirimGCM($data);
-        echo "\r\nPermintaan berhasil";
+        //tampilkan response
+        header('Content-type: application/json');
+        echo response($IDNumber,$daftar[1]);
     }
 }
 else {

@@ -30,25 +30,26 @@ function proseshash($data,$postedhash) {
     return 0;
 }
 
-function kirimcallback($url,$message) {
-    $url="http://postcatcher.in/catchers/5417ac22dc35d6020000077f";
-    $data=array('From' => 'Signing Interface', 'Request' => 'ok', 'Message' => $message);
+function kirimcallback($url,$IDNumber,$pid) {
+    //$url="http://postcatcher.in/catchers/5417ac22dc35d6020000077f";
+    $data=array('From' => 'Signing Interface', 'Success' => TRUE, 'NIK' => $IDNumber, 'PID' => $pid);
     sendpost($url,$data);
 }
 
 function sendpost($url,$data) {
-    // use key 'http' even if you send the request to https://...
     $options = array(
         'http' => array(
-            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
             'method'  => 'POST',
-            'content' => http_build_query($data),
-        ),
+            'content' => json_encode( $data ),
+            'header'=>  "Content-Type: application/json\r\n" .
+                        "Accept: application/json\r\n"
+          )
     );
-    $context  = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
 
-    //var_dump($result);
+    $context     = stream_context_create($options);
+    $result      = file_get_contents($url, false, $context);
+    $response    = json_decode($result, true);
+    return $response;
 }
 
 //reveice post message
@@ -67,11 +68,11 @@ if (!file_exists("./data/pid/".$filename) == 0) {
     if (proseshash($data,$posthash) == 1) {
         echo "Hash benar !";
         //kirim callback
-        $callback = $data["META"]["CallbackURL"];
-        $message = $data["META"]["Message"];
-        kirimcallback($callback,$message);
+        $CallbackURL =  $data["META"]["CallbackURL"];
+        $IDNumber = $data["KTP"]["NIK"];
+        kirimcallback($CallbackURL,$IDNumber,$PID);
         //jika callback berhasil, hapus file pid
-        unlink("./data/pid/".$filename);
+        //unlink("./data/pid/".$filename);
     }
     else echo "Hash salah";
 }
