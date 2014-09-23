@@ -32,7 +32,9 @@ class GCMPushMessage {
 	// function GCMPushMessage($apiKeyIn){
 	function GCMPushMessage($message, $OTP, $id){
 		// $this->serverApiKey = $apiKeyIn;
-		$this->data = array('message' => $message, 'OTP' => $OTP);
+		// $this->data = array('message' => $message, 'OTP' => $OTP);
+		$json_message = '{"info":"'.$message.'","OTP":"'.$OTP.'"}';
+		$this->data = array('message' => $json_message);
 		$this->ids = array($id);
 	}
 
