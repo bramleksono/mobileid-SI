@@ -30,9 +30,9 @@ class GCMPushMessage {
 		@param $apiKeyIn the server API key
 	*/
 	// function GCMPushMessage($apiKeyIn){
-	function GCMPushMessage($message, $id){
+	function GCMPushMessage($message, $OTP, $id){
 		// $this->serverApiKey = $apiKeyIn;
-		$this->data = array('title' => 'test title', 'message' => $message);
+		$this->data = array('message' => $message, 'OTP' => $OTP);
 		$this->ids = array($id);
 	}
 
