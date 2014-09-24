@@ -70,7 +70,7 @@ $IDNumber = $data["KTP"]["NIK"];
 
 //process message
 if (cariapp($AppID) >= 0) {
-    echo $encode = json_encode($data['KTP']);
+    $encode = json_encode($data['KTP']);
     $data["META"]["signature"] = hitunghashdata($encode);
     $daftar = daftarpid($AppID,$data);
     if ($daftar[0] == 1) {
