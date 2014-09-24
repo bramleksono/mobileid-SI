@@ -37,11 +37,12 @@ function daftarpid($appid,$data) {
     return array ($result,$pid,$OTP);
 }
 
-function kirimGCM ($data,$OTP) {
+function kirimGCM ($data, $AppID, $PID, $OTP) {
+    //mengirim pesan ke device (Pesan + AppID + PID + OTP)
     $devices = $data["META"]["DeviceID"];
     $message = $data["META"]["Message"];
     
-    $gcpm = new GCMPushMessage($message,$OTP,$devices);
+    $gcpm = new GCMPushMessage($message,$AppID, $PID, $OTP,$devices);
     $response = $gcpm->sendGoogleCloudMessage();
     
     //echo "Response:".$response."\n";
@@ -70,8 +71,8 @@ if (cariapp($AppID) >= 0) {
     $data["META"]["signature"] = hitunghashdata($encode);
     $daftar = daftarpid($AppID,$data);
     if ($daftar[0] == 1) {
-        //mengirim pesan ke device (Pesan + OTP)
-        kirimGCM($data,$daftar[2]);
+        //mengirim pesan ke device (Pesan + AppID + PID + OTP)
+        kirimGCM($data,$AppID,$daftar[1],$daftar[2]);
         //tampilkan response
         header('Content-type: application/json');
         echo response($IDNumber,$daftar[1]);
