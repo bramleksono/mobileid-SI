@@ -60,7 +60,7 @@ function sendpost($url,$data) {
 $postdata = json_decode(file_get_contents('php://input'), true);
 $AppID =  $postdata["META"]["AppID"];
 $PID =  $postdata["META"]["PID"];
-$posthash =  $postdata["MESSAGE"]["hash"];
+$posthash =  $postdata["MESSAGE"]["hmac"];
 
 $filename = $AppID.".".$PID;
 if (!file_exists("./data/pid/".$filename) == 0) {

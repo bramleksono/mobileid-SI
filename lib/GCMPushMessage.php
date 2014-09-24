@@ -30,12 +30,12 @@ class GCMPushMessage {
 		@param $apiKeyIn the server API key
 	*/
 	// function GCMPushMessage($apiKeyIn){
-	function GCMPushMessage($message, $AppID, $PID, $OTP, $id){
+	function GCMPushMessage($message, $AppID, $PID, $OTP, $id,$CAcallbackaddr){
 		// $this->serverApiKey = $apiKeyIn;
 		// $this->data = array('message' => $message, 'OTP' => $OTP);
         
         //mengirim pesan ke device (Pesan + AppID + PID + OTP)
-		$json_message = '{"info":"'.$message.'","AppID":"'.$AppID.'","PID":"'.$PID.'","OTP":"'.$OTP.'"}';
+		$json_message = '{"info":"'.$message.'","AppID":"'.$AppID.'","PID":"'.$PID.'","OTP":"'.$OTP.'","CAaddress":"'.$CAcallbackaddr.'"}';
 		$this->data = array('message' => $json_message);
 		$this->ids = array($id);
 	}

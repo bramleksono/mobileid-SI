@@ -5,6 +5,6 @@
     "PID": "825389759"
   },
    "MESSAGE": {
-       "hash": "742c01983bc6fd3cb031919c235aafbb53423ed0b7ac91b5e2db9b1664165fba"
+       "hmac": "742c01983bc6fd3cb031919c235aafbb53423ed0b7ac91b5e2db9b1664165fba"
    }
 }

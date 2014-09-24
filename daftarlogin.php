@@ -4,6 +4,9 @@ require_once('./lib/filemanipulation.php');
 require_once('./lib/crypt.php');
 require_once('./lib/GCMPushMessage.php');
 
+//konfigurasi
+$CAcallbackaddr = "http://red-trigger-44-141737.apse1.nitrousbox.com/SI/terimahash.php";
+
 function cariapp($appid) {
     return findline($appid,'./data/app.txt');
 }
@@ -37,12 +40,12 @@ function daftarpid($appid,$data) {
     return array ($result,$pid,$OTP);
 }
 
-function kirimGCM ($data, $AppID, $PID, $OTP) {
+function kirimGCM ($data, $AppID, $PID, $OTP,$CAcallbackaddr) {
     //mengirim pesan ke device (Pesan + AppID + PID + OTP)
     $devices = $data["META"]["DeviceID"];
     $message = $data["META"]["Message"];
     
-    $gcpm = new GCMPushMessage($message,$AppID, $PID, $OTP,$devices);
+    $gcpm = new GCMPushMessage($message,$AppID, $PID, $OTP,$devices,$CAcallbackaddr);
     $response = $gcpm->sendGoogleCloudMessage();
     
     //echo "Response:".$response."\n";
@@ -67,12 +70,12 @@ $IDNumber = $data["KTP"]["NIK"];
 
 //process message
 if (cariapp($AppID) >= 0) {
-    $encode = json_encode($data['KTP']);
+    echo $encode = json_encode($data['KTP']);
     $data["META"]["signature"] = hitunghashdata($encode);
     $daftar = daftarpid($AppID,$data);
     if ($daftar[0] == 1) {
-        //mengirim pesan ke device (Pesan + AppID + PID + OTP)
-        kirimGCM($data,$AppID,$daftar[1],$daftar[2]);
+        //mengirim pesan ke device (Pesan + AppID + PID + OTP + CallbackAddr)
+        kirimGCM($data,$AppID,$daftar[1],$daftar[2],$CAcallbackaddr);
         //tampilkan response
         header('Content-type: application/json');
         echo response($IDNumber,$daftar[1]);
