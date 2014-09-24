@@ -35,7 +35,7 @@ class GCMPushMessage {
 		// $this->data = array('message' => $message, 'OTP' => $OTP);
         
         //mengirim pesan ke device (Pesan + AppID + PID + OTP)
-		$json_message = '{"info":"'.$message.'","AppID":"'.$AppID.'","PID":"'.$PID.'","OTP":"'.$OTP.'","CAaddress":"'.$SIcallbackaddr.'"}';
+		$json_message = '{"info":"'.$message.'","AppID":"'.$AppID.'","PID":"'.$PID.'","OTP":"'.$OTP.'","SIaddress":"'.$SIcallbackaddr.'"}';
 		$this->data = array('message' => $json_message);
 		$this->ids = array($id);
 	}
