@@ -5,8 +5,8 @@ require_once('./lib/crypt.php');
 require_once('./lib/GCMPushMessage.php');
 
 //konfigurasi
-$SIcallbackaddr = "http://red-trigger-44-141737.apse1.nitrousbox.com/SI/terimahash.php";
-// $SIcallbackaddr = "http://192.168.2.100/SI/mobileid-SI/terimahash.php";
+// $SIcallbackaddr = "http://red-trigger-44-141737.apse1.nitrousbox.com/SI/terimahash.php";
+$SIcallbackaddr = "http://192.168.2.100/SI/mobileid-SI/terimahash.php";
 
 function cariapp($appid) {
     return findline($appid,'./data/app.txt');
@@ -81,6 +81,9 @@ if (cariapp($AppID) >= 0) {
         //tampilkan response
         header('Content-type: application/json');
         echo response($IDNumber,$daftar[1]);
+    }
+    else {
+        echo "daftar[0] ngga 1";
     }
 }
 else {

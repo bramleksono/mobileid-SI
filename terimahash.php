@@ -20,19 +20,27 @@ function hash_compare($a, $b) {
 function proseshash($data,$postedhash) {
     $signature =  $data["META"]["signature"];
     $OTP =  $data["META"]["OTP"];
+    // $key = pack("H*",$OTP);
     //hitung hmac dengan OTP sebagai key
     $hmacresult = hitunghmacdata($signature,$OTP);
+    // $hmacresult = hitunghmacdata($signature,$key);
 
-    echo "sig=".$signature." OTP=".$OTP." hmac=".$hmacresult.PHP_EOL;
+    // echo "sig=".$signature." OTP=".$OTP." hmac=".$hmacresult.PHP_EOL;
     if (hash_compare($hmacresult, $postedhash)) { 
         return 1; 
     }
     return 0;
 }
 
-function kirimcallback($url,$IDNumber,$pid) {
+function kirimcallback($url,$data,$postdata) {
     //$url="http://postcatcher.in/catchers/5417ac22dc35d6020000077f";
-    $data=array('From' => 'Signing Interface', 'Success' => TRUE, 'NIK' => $IDNumber, 'PID' => $pid);
+    $data=array('From' => 'Signing Interface', 
+                'Success' => true, 
+                'NIK' => $data["KTP"]["NIK"], 
+                'PID' => $postdata["META"]["PID"], 
+                'signature' => $data["META"]["signature"], 
+                'OTP' => $data["META"]["OTP"], 
+                'hmac' => $postdata["MESSAGE"]["hmac"]);
     sendpost($url,$data);
 }
 
@@ -45,11 +53,21 @@ function sendpost($url,$data) {
                         "Accept: application/json\r\n"
           )
     );
-
+    // echo json_encode($data);
     $context     = stream_context_create($options);
     $result      = file_get_contents($url, false, $context);
     $response    = json_decode($result, true);
     return $response;
+}
+
+function response($Status,$IDNumber,$pid,$Message) {
+    $response['STATUS'] = array(
+      'Success' => $Status, 
+      'NIK' => $IDNumber,
+      'PID' => $pid,
+      'Message' => $Message,
+    );
+    return json_encode($response);
 }
 
 //reveice post message
@@ -58,7 +76,7 @@ function sendpost($url,$data) {
 //$hash=$_POST['hash'];
 
 $postdata = json_decode(file_get_contents('php://input'), true);
-$AppID =  $postdata["META"]["AppID"];
+$AppID =  $postdata["META"]["AppID"];   
 $PID =  $postdata["META"]["PID"];
 $posthash =  $postdata["MESSAGE"]["hmac"];
 
@@ -66,16 +84,25 @@ $filename = $AppID.".".$PID;
 if (!file_exists("./data/pid/".$filename) == 0) {
     $data = json_decode(file_get_contents("./data/pid/".$filename), true);
     if (proseshash($data,$posthash) == 1) {
-        echo "Hash benar !";
+        $data["META"]["HMAC"] = $posthash;
+        if (!file_put_contents("./data/pid/".$filename, json_encode($data))) {
+            // echo "kesalahan menyimpan process id";
+            echo response(true, $data["KTP"]["NIK"],$postdata["META"]["PID"],"kesalahan menyimpan file");
+        }
+        else echo response(true, $data["KTP"]["NIK"],$postdata["META"]["PID"],"OK");
+        // echo "Hash benar !";
+
         //kirim callback
         $CallbackURL =  $data["META"]["CallbackURL"];
         $IDNumber = $data["KTP"]["NIK"];
-        kirimcallback($CallbackURL,$IDNumber,$PID);
+        kirimcallback($CallbackURL,$data,$postdata);
         //jika callback berhasil, hapus file pid
-        //unlink("./data/pid/".$filename);
+        // unlink("./data/pid/".$filename);
     }
-    else echo "Hash salah";
+    // else echo "Hash salah";
+    else echo response(false, $data["KTP"]["NIK"],$PID,"Hash salah");
 }
-else echo "PID tidak ditemukan";
+// else echo "PID tidak ditemukan";
+else echo response(false, 0,$postdata["META"]["PID"],"PID tidak ditemukan");;
 
 ?>
