@@ -3,10 +3,11 @@
 require_once('./lib/filemanipulation.php');
 require_once('./lib/crypt.php');
 require_once('./lib/GCMPushMessage.php');
+include('./addr-path.php');
 
 //konfigurasi
 // $SIcallbackaddr = "http://red-trigger-44-141737.apse1.nitrousbox.com/SI/terimahash.php";
-$SIcallbackaddr = "http://192.168.2.100/SI/mobileid-SI/terimahash.php";
+// $SIcallbackaddr = "http://192.168.2.107/SI/mobileid-SI/terimahash.php";
 
 function cariapp($appid) {
     return findline($appid,'./data/app.txt');
