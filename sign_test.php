@@ -1,6 +1,6 @@
 <?php
 //data you want to sign
-$data = 'my data';
+$data = '42cb563de298586b605797b86bd636a6a8e623b3af217138b2822bcb3bed512f';
 
 //create new private and public key
 // $new_key_pair = openssl_pkey_new(array(

@@ -82,7 +82,7 @@ if (!file_exists("./data/pid/".$filename) == 0) {
         $passphrase = $postdata["password"]."".$postdata["password"];
         // echo $passphrase."\n";
 
-        $priv_key = file_get_contents('./key/3271231008950005.priv.pem');
+        $priv_key = file_get_contents('./key/'.$postdata["userid"].'.priv.pem');
         // echo $priv_key."\n";
         $key = openssl_pkey_get_private($priv_key, $passphrase);
         // //create signature
