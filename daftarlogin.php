@@ -47,7 +47,8 @@ function kirimGCM ($data, $AppID, $PID, $OTP,$SIcallbackaddr) {
     $devices = $data["META"]["DeviceID"];
     $message = $data["META"]["Message"];
     
-    $gcpm = new GCMPushMessage($message,$AppID, $PID, $OTP,$devices,$SIcallbackaddr);
+    $gcpm = new GCMPushMessage($devices);
+    $gcpm->fillDataIDverify($message,$AppID, $PID, $OTP,$SIcallbackaddr);
     $response = $gcpm->sendGoogleCloudMessage();
     
     //echo "Response:".$response."\n";

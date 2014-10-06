@@ -20,94 +20,33 @@
 
 */
 class GCMPushMessage {
-
-	// var $url = 'https://android.googleapis.com/gcm/send';
-	// var $serverApiKey = "";
-	// var $devices = array();
-	
-	/*
-		Constructor
-		@param $apiKeyIn the server API key
-	*/
-	// function GCMPushMessage($apiKeyIn){
-	function GCMPushMessage($message, $AppID, $PID, $OTP, $id,$SIcallbackaddr){
-		// $this->serverApiKey = $apiKeyIn;
-		// $this->data = array('message' => $message, 'OTP' => $OTP);
-        
-        //mengirim pesan ke device (Pesan + AppID + PID + OTP)
-		$json_message = '{"info":"'.$message.'","AppID":"'.$AppID.'","PID":"'.$PID.'","OTP":"'.$OTP.'","SIaddress":"'.$SIcallbackaddr.'"}';
-		$this->data = array('message' => $json_message);
+	function GCMPushMessage($id){
 		$this->ids = array($id);
 	}
 
-	/*
-		Set the devices to send to
-		@param $deviceIds array of device tokens to send to
-	*/
-	// function setDevices($deviceIds){
-	
-	// 	if(is_array($deviceIds)){
-	// 		$this->devices = $deviceIds;
-	// 	} else {
-	// 		$this->devices = array($deviceIds);
-	// 	}
-	
-	// }
+	function fillDataIDverify($message, $AppID, $PID, $OTP, $SIcallbackaddr){
+		$json_message = '{"info":"'.$message.
+						'","AppID":"'.$AppID.
+						'","PID":"'.$PID.
+						'","OTP":"'.$OTP.
+						'","SIaddress":"'.$SIcallbackaddr.
+						'"}';
+		$this->data = array('message' => $json_message);
+	}
 
-	/*
-		Send the message to the device
-		@param $message The message to send
-		@param $data Array of data to accompany the message
-	*/
-	// function send($message, $data = false){
-		
-	// 	if(!is_array($this->devices) || count($this->devices) == 0){
-	// 		$this->error("No devices set");
-	// 	}
-		
-	// 	if(strlen($this->serverApiKey) < 8){
-	// 		$this->error("Server API Key not set");
-	// 	}
-		
-	// 	$fields = array(
-	// 		'registration_ids'  => $this->devices,
-	// 		'data'              => array( "message" => $message ),
-	// 	);
-		
-	// 	if(is_array($data)){
-	// 		foreach ($data as $key => $value) {
-	// 			$fields['data'][$key] = $value;
-	// 		}
-	// 	}
+	function fillDataWebSign($data, $SIsigncallbackaddr){
+		$json_message = '{"info":"websign","title":"'.$data["title"].
+						'","content":"'.$data["content"].
+						'","hash":"'.$data["hash"].
+						'","userid":"'.$data["userid"].
+						'","id":"'.$data["id"].
+						'","OTP":"'.$data["otp"].
+						'","PID":"'.$data["pid"].
+						'","SIaddress":"'.$SIsigncallbackaddr.
+						'"}';
+		$this->data = array('message' => $json_message);
+	}
 
-	// 	$headers = array( 
-	// 		'Authorization: key=' . $this->serverApiKey,
-	// 		'Content-Type: application/json'
-	// 	);
-
-	// 	// Open connection
-	// 	$ch = curl_init();
-		
-	// 	// Set the url, number of POST vars, POST data
-	// 	curl_setopt( $ch, CURLOPT_URL, $this->url );
-		
-	// 	curl_setopt( $ch, CURLOPT_POST, true );
-	// 	curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
-	// 	curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
-	// 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		
-	// 	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $fields ) );
-		
-	// 	// Execute post
-	// 	$result = curl_exec($ch);
-		
-	// 	// Close connection
-	// 	curl_close($ch);
-		
-	// 	return $result;
-	// }
-	
-	// function sendGoogleCloudMessage( $message, $id )
 	function sendGoogleCloudMessage()
 	{
 		$data = $this->data;
