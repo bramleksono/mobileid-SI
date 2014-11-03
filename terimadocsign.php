@@ -1,13 +1,10 @@
 <?php
-
 require_once('./lib/crypt.php');
-require_once('./lib/filemanipulation.php');
 
 function kirimcallback($url,$data,$postdata) {
     unset($postdata["password"]);
     $postdata["Success"] = true;
-    $postdata["websignature"] = $data["websignature"];
-    return sendpost($data["CAwebsigncallback"],$postdata);
+    return sendpost($data["CAdocsigncallback"],$postdata);
 }
 
 function sendpost($url,$data) {
@@ -37,14 +34,10 @@ function response($Status,$IDNumber,$pid,$Message) {
 }
 
 $postdata = json_decode(file_get_contents('php://input'), true);
-
-$text = json_encode($postdata);
-$writeline($text,$text,"log.txt");
-	
 $PID =  $postdata["PID"];
 $posthash =  $postdata["hmac"];
 
-$filename = $postdata["userid"]."websign.".$PID;
+$filename = $postdata["userid"]."docsign.".$PID;
 // echo $filename."\n";
 if (!file_exists("./data/pid/".$filename) == 0) {
     $data = json_decode(file_get_contents("./data/pid/".$filename), true);
@@ -54,13 +47,7 @@ if (!file_exists("./data/pid/".$filename) == 0) {
         $passphrase = $postdata["password"]."".$postdata["password"];
         // echo $passphrase."\n";
 
-        $priv_key = file_get_contents('./key/'.$postdata["userid"].'.priv.pem');
-        // echo $priv_key."\n";
-        $key = openssl_pkey_get_private($priv_key, $passphrase);
-        // //create signature
-        openssl_sign($data["hash"], $websignature, $key, OPENSSL_ALGO_SHA256);
-
-        $data["websignature"] = base64_encode($websignature);
+        $data["docpassphrase"] = $passphrase;
         $encode = json_encode($data);
         // echo $encode."\n";
         // echo $data["hash"]."\n";
@@ -73,7 +60,7 @@ if (!file_exists("./data/pid/".$filename) == 0) {
         // echo "Hash benar !";
 
         //kirim callback
-        $CallbackURL =  $data["CAwebsigncallback"];
+        $CallbackURL =  $data["CAdocsigncallback"];
         $response = kirimcallback($CallbackURL,$data,$postdata);
         if($response["Success"] == true){
             echo response(true, $data["userid"],$postdata["PID"],"SI - OK");
@@ -85,7 +72,7 @@ if (!file_exists("./data/pid/".$filename) == 0) {
         // unlink("./data/pid/".$filename);
     }
     // else echo "Hash salah";
-    else echo response(false, $data["userid"],$PID,"Hash salah");
+    else echo response(false, $data["KTP"]["NIK"],$PID,"Hash salah");
 }
 // else echo "PID tidak ditemukan";
 else echo response(false, 0,$postdata["META"]["PID"],"PID tidak ditemukan");;

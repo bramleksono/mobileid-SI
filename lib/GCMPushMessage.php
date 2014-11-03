@@ -35,7 +35,7 @@ class GCMPushMessage {
 	}
 
 	function fillDataWebSign($data, $SIsigncallbackaddr){
-		$json_message = '{"info":"websign","title":"'.$data["title"].
+		$json_message = '{"info":"websign","title":"'.$data["title"].','.$data["content"].
 						'","content":"'.$data["content"].
 						'","hash":"'.$data["hash"].
 						'","userid":"'.$data["userid"].
@@ -43,6 +43,19 @@ class GCMPushMessage {
 						'","OTP":"'.$data["otp"].
 						'","PID":"'.$data["pid"].
 						'","SIaddress":"'.$SIsigncallbackaddr.
+						'"}';
+		$this->data = array('message' => $json_message);
+	}
+	
+	function fillDataDocSign($data, $SIdocsigncallbackaddr){
+		$json_message = '{"info":"docsign","title":"'.$data["title"].
+						'","content":"'.$data["content"].
+						'","hash":"'.$data["hash"].
+						'","userid":"'.$data["userid"].
+						'","id":"'.$data["id"].
+						'","OTP":"'.$data["otp"].
+						'","PID":"'.$data["pid"].
+						'","SIaddress":"'.$SIdocsigncallbackaddr.
 						'"}';
 		$this->data = array('message' => $json_message);
 	}
