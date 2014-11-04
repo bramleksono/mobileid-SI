@@ -8,6 +8,11 @@ require_once('./lib/tcpdf_min/tcpdf.php');
 require_once('./lib/PDFMerger/PDFMerger.php');
 
 $uploaddir = realpath('./') . '/documents/';
+
+if (!file_exists($uploaddir)) {
+    mkdir($uploaddir, 0755, true);
+}
+
 $uploadfile = $uploaddir . basename($_FILES['file_contents']['name']);
 
 if (move_uploaded_file($_FILES['file_contents']['tmp_name'], $uploadfile)) {

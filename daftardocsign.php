@@ -56,6 +56,11 @@ function response($IDNumber,$PID,$id) {
 }
 
 $uploaddir = realpath('./') . '/documents/signature/';
+
+if (!file_exists($uploaddir)) {
+    mkdir($uploaddir, 0755, true);
+}
+
 $uploadfile = $uploaddir . basename($_FILES['file_contents']['name']);
 
 if (move_uploaded_file($_FILES['file_contents']['tmp_name'], $uploadfile)) {
