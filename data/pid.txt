@@ -1,6 +1,0 @@
-//untuk referensi saja
-
-app number | id number | message | process number | otp | callback url
-
-123123123:>0123123435:>permintaan login website:>1562095054:>9738:>http://red-trigger-44-141737.apse1.nitrousbox.com/1-digital-sig/SI/tes.php
-123123123:>0123123435:>tes login:>502295554:>5399:>http://postcatcher.in/catchers/5417ac22dc35d6020000077f

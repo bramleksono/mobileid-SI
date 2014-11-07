@@ -38,9 +38,6 @@ function response($Status,$IDNumber,$pid,$Message) {
 
 $postdata = json_decode(file_get_contents('php://input'), true);
 
-$text = json_encode($postdata);
-$writeline($text,$text,"log.txt");
-	
 $PID =  $postdata["PID"];
 $posthash =  $postdata["hmac"];
 

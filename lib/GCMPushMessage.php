@@ -23,9 +23,17 @@ class GCMPushMessage {
 	function GCMPushMessage($id){
 		$this->ids = array($id);
 	}
+	
+	function notification($message){
+		$json_message = '{"info":"'."notification".
+						'","content":"'.$message.
+						'"}';
+		$this->data = array('message' => $json_message);
+	}
 
 	function fillDataIDverify($message, $AppID, $PID, $OTP, $SIcallbackaddr){
-		$json_message = '{"info":"'.$message.
+		$json_message = '{"info":"'."data ID".
+		                '","content":"'.$message.
 						'","AppID":"'.$AppID.
 						'","PID":"'.$PID.
 						'","OTP":"'.$OTP.
